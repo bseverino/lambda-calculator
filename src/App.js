@@ -10,6 +10,8 @@ import {Display} from "./components/DisplayComponents/Display";
 // Logo has already been provided for you. Do the same for the remaining components
 import Logo from "./components/DisplayComponents/Logo";
 
+let heldNumbers = [];
+
 function App() {
   // STEP 5 - After you get the components displaying using the provided data file, write your state hooks here.
   // Once the state hooks are in place write some functions to hold data in state and update that data depending on what it needs to be doing
@@ -17,6 +19,47 @@ function App() {
   // the "5" button, or the operator if they click one of those buttons) and then call your setter function to update state.
   // Don't forget to pass the functions (and any additional data needed) to the components as props
   const [numDisplay, setNumDisplay] = useState(0);
+  
+  console.log(heldNumbers);
+
+  const changeNumber = change => {
+    setNumDisplay(change);
+  };
+  const addPeriod = () => {
+    setNumDisplay(numDisplay + ".");
+  };
+  const addDigit = digit => {
+    setNumDisplay(numDisplay + `${digit}`)
+  };
+
+  const pushNumber = (num, operation) => {
+    let integer = Number(num);
+    heldNumbers.push(integer);
+    heldNumbers.push(operation);
+  };
+
+  const equal = (num) => {
+    let integer = Number(num);
+    heldNumbers.push(integer);
+    if (heldNumbers[1] === "+"){
+      setNumDisplay(heldNumbers[0] + heldNumbers[2]);
+    } else if (heldNumbers[1] === "-"){
+      setNumDisplay(heldNumbers[0] - heldNumbers[2]);
+    } else if (heldNumbers[1] === "*"){
+      setNumDisplay(heldNumbers[0] * heldNumbers[2]);
+    } else if (heldNumbers[1] === "/"){
+      setNumDisplay(heldNumbers[0] / heldNumbers[2]);
+    };
+  };
+
+  const clearNumbers = () => {
+    heldNumbers = [];
+  };
+
+  const clear = () => {
+    setNumDisplay(0);
+    clearNumbers();
+  };
 
   return (
     <div className="container">
@@ -26,10 +69,10 @@ function App() {
         <Display number={numDisplay} />
         <div className="buttons">
           <div className="left-side">
-            <Specials />
-            <Numbers />
+            <Specials clear={clear} />
+            <Numbers numDisplay={numDisplay} held={heldNumbers} change={changeNumber} period={addPeriod} digit={addDigit} />
           </div>
-          <Operators />          
+          <Operators numDisplay={numDisplay} pushNumber={pushNumber} equal={equal} />          
         </div>
       </div>
     </div>
